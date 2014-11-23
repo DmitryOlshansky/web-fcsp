@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Drag and drop, automatic upload</title>
+<style>
+#holder { border: 10px dashed #ccc; width: 95%; min-height: 250px; margin: 20px auto;}
+#holder.hover { border: 10px dashed #0c0; }
+#holder img { display: block; margin: 10px auto; }
+#holder p { margin: 10px; font-size: 14px; }
+progress { width: 100%; }
+progress:after { content: '%'; }
+.fail { background: #c00; padding: 2px; color: #fff; }
+.hidden { display: none !important;}
+</style>
+<script type="text/javascript" src="static/jquery-1.11.1.min.js"></script>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" href="static/ChemDoodleWeb.css" type="text/css">
+<script type="text/javascript" src="static/ChemDoodleWeb.js"></script>
+</head>
+<body>
+<article id="container">
+
+<p>Drag MOL files to the drop zone below.</p>
+<div>FCSP codes: <div id="code" style="display:inline"></div></div>
+<div id="holder">
+<canvas id="schema"></canvas>
+</div>
+</article>
+<script>
+function readfiles(files) {
+    var formData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+    }
+    // now post a new XHR request
+    var xhr = $.ajax({
+        url: '/encode',
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        data: formData
+    }).progress(function (event) {
+        if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+        }
+    }).done(function (data) {
+        $("#code").html(data);
+    })
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var mol = ChemDoodle.readMOL(e.target.result);
+        mol.scaleToAverageBondLength(50);
+        var viewACS = new ChemDoodle.ViewerCanvas('schema', 300, 300);
+        viewACS.specs.bonds_width_2D = .6;
+        viewACS.specs.bonds_saturationWidth_2D = .18;
+        viewACS.specs.bonds_hashSpacing_2D = 2.5;
+        viewACS.specs.atoms_font_size_2D = 16;
+        viewACS.specs.atoms_font_families_2D = ['Helvetica', 'Arial', 'sans-serif'];
+        viewACS.specs.atoms_displayTerminalCarbonLabels_2D = true;
+        viewACS.loadMolecule(mol);
+    }
+    reader.readAsText(files[0]);    
+}
+holder.ondragover = function () { this.className = 'hover'; return false; };
+holder.ondragend = function () { this.className = ''; return false; };
+holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    readfiles(e.dataTransfer.files);
+}
+</script>
+<script>
+  
+
+</script>
+</html>
