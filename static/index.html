@@ -4,10 +4,11 @@
 <title>Кодировщик ФКСП</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-#droparea { border: 3px dashed #ccc; width: 95%; min-height: 250px; margin: 20px auto;}
+#droparea { border: 3px dashed #ccc; width: 95%; min-height: 300px; margin: 20px auto;}
 #droparea.hover { border: 3px dashed #0c0; }
 #droparea img { display: block; margin: 10px auto; }
 #droparea p { margin: 10px; font-size: 14px; }
+
 progress { width: 100%; }
 progress:after { content: '%'; }
 .fail { background: #c00; padding: 2px; color: #fff; }
@@ -34,13 +35,13 @@ progress:after { content: '%'; }
 var droparea = document.getElementById("droparea")
 var total = 0
 function addPreview(file,id){
-    var el = $('<div class="row"><div class="col-md-6 molframe"/><canvas id="mol'+id+'"></canvas><div class="col-md-6"><p class="lead" id="code'+id+'"></p></div></div>')
+    var el = $('<div class="row"><div class="col-xs-6 molframe"><div>'+file.name+'</div><canvas id="mol'+id+'"></canvas></div><div class="col-xs-6"><h3 id="code'+id+'"></h3></div></div>')
     $("#droparea").append(el)
     var reader = new FileReader();
     reader.onload = function (e) {
         var mol = ChemDoodle.readMOL(e.target.result);
         mol.scaleToAverageBondLength(50);
-        var viewACS = new ChemDoodle.ViewerCanvas('mol'+id, 250, 250);
+        var viewACS = new ChemDoodle.ViewerCanvas('mol'+id, 300, 280);
         viewACS.specs.bonds_width_2D = .6;
         viewACS.specs.bonds_saturationWidth_2D = .18;
         viewACS.specs.bonds_hashSpacing_2D = 2.5;
@@ -75,7 +76,7 @@ function encodeFCSP(file, id) {
 function readfiles(files) {
     for (var i = 0; i < files.length; i++) {
         addPreview(files[i], total);
-        $("#droparea").css({ height : (total+1)*250 });
+        $("#droparea").css({ height : (total+1)*310 });
         // now post a new XHR request
         encodeFCSP(files[i], total)
         total++;
