@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html>
 <head>
 <title>Кодировщик ФКСП</title>
@@ -41,8 +41,9 @@ function addPreview(file,id){
     reader.onload = function (e) {
         var mol = ChemDoodle.readMOL(e.target.result);
         mol.scaleToAverageBondLength(50);
-        var viewACS = new ChemDoodle.ViewerCanvas('mol'+id, 300, 280);
-        viewACS.specs.bonds_width_2D = .6;
+        var viewACS = new ChemDoodle.TransformCanvas('mol'+id, 400, 320, true);
+        viewACS.specs.bonds_useJMOLColors = true;
+        viewACS.specs.bonds_width_2D = 1.5;
         viewACS.specs.bonds_saturationWidth_2D = .18;
         viewACS.specs.bonds_hashSpacing_2D = 2.5;
         viewACS.specs.atoms_font_size_2D = 16;
@@ -68,15 +69,19 @@ function encodeFCSP(file, id) {
             progress.value = progress.innerHTML = complete;
         }
     }).done(function (data) {
-        console.log(data)
-        $("#code"+id).html(data);
+        var data = JSON.parse(data);
+        var codes = []
+        for(var i=0; i<data.length; i++){
+            codes.push(data[i].code);
+        }
+        $("#code"+id).html(codes.join(" "));
     })
 }
 
 function readfiles(files) {
     for (var i = 0; i < files.length; i++) {
         addPreview(files[i], total);
-        $("#droparea").css({ height : (total+1)*310 });
+        $("#droparea").css({ height : (total+1)*410 });
         // now post a new XHR request
         encodeFCSP(files[i], total)
         total++;
