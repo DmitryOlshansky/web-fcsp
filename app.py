@@ -13,7 +13,7 @@ def projects_list():
     f = request.files['file']
     data = f.read()
     print data
-    proc = subprocess.Popen("fcsp -d descriptors".split(),
+    proc = subprocess.Popen("fcss-2a -d descriptors".split(),
         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     data = proc.communicate(data)    
     return data
