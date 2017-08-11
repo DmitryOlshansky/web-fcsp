@@ -58,7 +58,7 @@ function encodeFCSP(file, id) {
     var formData = new FormData();
     formData.append('file', file);
     var xhr = $.ajax({
-        url: '/encode',
+        url: '/encode_one',
         contentType: false,
         processData: false,
         type: 'POST',
