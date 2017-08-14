@@ -69,12 +69,7 @@ function encodeFCSP(file, id) {
             progress.value = progress.innerHTML = complete;
         }
     }).done(function (data) {
-        var data = JSON.parse(data);
-        var codes = []
-        for(var i=0; i<data.length; i++){
-            codes.push(data[i].code);
-        }
-        $("#code"+id).html(codes.join(" "));
+        $("#code"+id).html(data.code);
     })
 }
 
