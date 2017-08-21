@@ -15,7 +15,7 @@ def encode_one():
     f = request.files['file']
     data = f.read()
     codes = encode_mols.delay([data]).get()
-    ret = json.loads("\n".join(codes))[0]
+    ret = json.loads("\n".join(codes))
     return Response(json.dumps(ret), mimetype="application/json")
 
 @app.route("/encode_many", methods=["POST"])
@@ -30,7 +30,7 @@ def encode_many():
     result = {}
     flat = [item for batch in responses for item in batch]
     for i in range(len(flat)):
-        result[names[i]] = json.loads(flat[i])[0]
+        result[names[i]] = json.loads(flat[i])
     return Response(json.dumps(result), mimetype="application/json")
 
 if __name__ == '__main__':
